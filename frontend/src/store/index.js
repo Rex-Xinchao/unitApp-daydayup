@@ -4,9 +4,15 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-  state: {},
+  state: {
+    user: {}
+  },
   mutations: {},
-  getters: {},
+  getters: {
+    user: (state) => {
+      return state.user
+    }
+  },
   actions: {}
 })
 

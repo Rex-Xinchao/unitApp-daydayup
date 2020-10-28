@@ -2,40 +2,74 @@ const express = require('express')
 const router = express.Router()
 const userModel = require('../model/user')
 const utils = require('../lib/utils')
-const request = require('request')
 
-router.get('/getId', (req, res, next) => {
-  const params = req.query
-  let code = params.code
-  request(
-    {
-      url:
-        'https://api.weixin.qq.com/sns/jscode2session?appid=wx9d2b9aad36bb0047&secret=6cce3131885af699672361cb2130c09b&js_code=' + code + '&grant_type=authorization_code',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+// 注册
+router.post('Register', (req, res) => {
+  const params = req.body
+  if (utils.checkParams(params, ['username', 'password'])) {
+    res.status(400).send({ code: 400, data: null, msg: '用户名和密码不能为空' })
+  } else {
+    userModel.register(
+      params,
+      (dbRes) => {
+        res.status(200).send({ code: 200, data: dbRes, msg: 'success' })
+      },
+      (err) => {
+        res.status(400).send({ code: 400, data: null, msg: err })
       }
-    },
-    function (err, response, body) {
-      if(response.statusCode == 200) {
-        res.status(200).send({ code: 200, data: JSON.parse(body).openid, msg: 'success' })
-      }
-    }
-  )
+    )
+  }
 })
-
-router.get('/Info', (req, res, next) => {
+// 登录
+router.post('/Login', (req, res) => {
+  const params = req.body
+  if (utils.checkParams(params, ['username', 'password'])) {
+    res.status(400).send({ code: 400, data: null, msg: '用户名和密码不能为空' })
+  } else {
+    userModel.login(
+      params,
+      (dbRes) => {
+        res.status(200).send({ code: 200, data: dbRes, msg: '登录成功' })
+      },
+      (err) => {
+        res.status(400).send({ code: 400, data: null, msg: err })
+      }
+    )
+  }
+})
+// 重设密码
+router.post('/Reset', (req, res) => {
+  const params = req.body
+  if (utils.checkParams(params, ['userId', 'password'])) {
+    res.status(400).send({ code: 400, data: null, msg: '用户Id和密码不能为空' })
+  } else {
+    userModel.resetPassword(
+      params,
+      (dbRes) => {
+        res.status(200).send({ code: 200, data: null, msg: '密码重置成功' })
+      },
+      (err) => {
+        res.status(400).send({ code: 400, data: null, msg: err })
+      }
+    )
+  }
+})
+// 获取用户信息
+router.get('/Info', (req, res) => {
   const params = req.query
-  utils.checkQueryParams(req, res, ['openid'])
-  userModel.getInfo(
-    params,
-    (dbRes) => {
-      res.status(200).send({ code: 200, data: dbRes, msg: 'success' })
-    },
-    (err) => {
-      res.status(400).send(err)
-    }
-  )
+  if (utils.checkParams(params, ['userId'])) {
+    res.status(400).send({ code: 400, data: null, msg: 'userId不能为空' })
+  } else {
+    userModel.getInfo(
+      params,
+      (dbRes) => {
+        res.status(200).send({ code: 200, data: dbRes, msg: 'success' })
+      },
+      (err) => {
+        res.status(400).send({ code: 400, data: null, msg: err })
+      }
+    )
+  }
 })
 
 module.exports = router
