@@ -26,12 +26,45 @@
         </div>
       </div>
     </div>
-    <div v-else class="user-info"></div>
+    <div v-else class="user-info">
+      <div class="operation-main">
+        <div class="form">
+          <div class="form-item">
+            <input v-model="editForm.username" class="input" placeholder="用户名称" />
+            <span v-if="usernameInfo" class="info">{{ usernameInfo }}</span>
+          </div>
+          <div class="form-item">
+            <div class="reset">
+              <input
+                :class="{ disabled: !isChanged }"
+                :disabled="!isChanged"
+                class="input reset-input"
+                v-model="editForm.password"
+                type="password"
+                placeholder="密码"
+              />
+              <div class="reset-btn" @click="resetCheck">重置</div>
+            </div>
+            <span v-if="passwordInfo" class="info">{{ passwordInfo }}</span>
+          </div>
+          <div class="form-item">
+            <input v-model="editForm.email" class="input" placeholder="邮箱" />
+            <span v-if="emailInfo" class="info">{{ emailInfo }}</span>
+          </div>
+          <div class="form-item">
+            <input v-model="editForm.mobile" class="input" placeholder="手机" />
+            <span v-if="mobileInfo" class="info">{{ mobileInfo }}</span>
+          </div>
+          <button @click="edit" class="button" size="mini" type="primary">修 改</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { isEmail, isMobile } from '../../libs/util'
 export default {
   data() {
     return {
@@ -41,11 +74,29 @@ export default {
       password: null,
       passwordInfo: null,
       checkPassword: null,
-      checkInfo: null
+      checkInfo: null,
+      email: null,
+      emailInfo: null,
+      mobile: null,
+      mobileInfo: null,
+      isChanged: false,
+      editForm: {}
     }
   },
   computed: {
     ...mapGetters(['user'])
+  },
+  watch: {
+    user: {
+      immediate: true,
+      handler(data) {
+        if (!data) return
+        this.editForm.username = data.username
+        this.editForm.password = data.password
+        this.editForm.email = data.email
+        this.editForm.mobile = data.mobile
+      }
+    }
   },
   onLoad() {},
   methods: {
@@ -57,6 +108,10 @@ export default {
       this.password = null
       this.checkInfo = false
       this.checkPassword = null
+    },
+    resetCheck() {
+      this.isChanged = true
+      this.editForm.password = null
     },
     login() {
       this.usernameInfo = this.username ? null : '用户名不能为空'
@@ -71,14 +126,14 @@ export default {
           password: this.password
         },
         success: res => {
-          if (res.code === 200) {
-            this.$message('登录成功', 'success')
+          if (res.data.code === 200) {
+            this.$store.dispatch('setUser', res.data.data)
           } else {
-            this.$message('登录失败', 'error')
+            this.$message(res.data.msg, 'error')
           }
         },
         fail: err => {
-          this.$message('登录失败', 'error')
+          this.$message(err.data.msg, 'error')
         }
       })
     },
@@ -97,14 +152,49 @@ export default {
           password: this.password
         },
         success: res => {
-          if (res.code === 200) {
-            this.$message('注册成功', 'success')
+          if (res.data.code === 200) {
+            this.$store.dispatch('setUser', res.data.data)
           } else {
-            this.$message('注册失败', 'error')
+            this.$message(res.data.msg, 'error')
           }
         },
         fail: err => {
-          alert('注册失败', 'error')
+          this.$message(err.data.msg, 'error')
+        }
+      })
+    },
+    edit() {
+      this.usernameInfo = this.editForm.username ? null : '用户名不能为空'
+      this.passwordInfo = this.editForm.password ? null : '密码不能为空'
+      if (this.usernameInfo || this.passwordInfo) return
+      if (this.editForm.email) {
+        this.emailInfo = isEmail(this.editForm.email) ? null : '邮箱格式不正确'
+      }
+      if (this.editForm.mobile) {
+        this.mobileInfo = isMobile(this.editForm.mobile) ? null : '手机格式不正确'
+      }
+      if (this.mobileInfo || this.emailInfo) return
+      uni.request({
+        url: '/api/user/edit',
+        method: 'POST',
+        dataType: 'JSON',
+        data: {
+          userId: this.user.id,
+          username: this.editForm.username,
+          password: this.editForm.password,
+          email: this.editForm.email,
+          mobile: this.editForm.mobile
+        },
+        success: res => {
+          if (res.data.code === 200) {
+            this.$message('修改成功', 'success')
+            this.$store.dispatch('setUser', res.data.data)
+          } else {
+            this.$message(res.data.msg, 'error')
+          }
+        },
+        fail: err => {
+          this.$message(err.data.msg, 'error')
         }
       })
     }
@@ -117,7 +207,8 @@ export default {
   width: 100%;
   height: 100%;
 
-  .user-operation {
+  .user-operation,
+  .user-info {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
@@ -173,6 +264,34 @@ export default {
           }
         }
       }
+    }
+
+    .reset-input {
+      display: inline-block;
+      border-radius: 0.25rem 0 0 0.25rem;
+      width: 75%;
+      box-sizing: border-box;
+
+      &.disabled {
+        background-color: #f5f7fa;
+        border-color: #e4e7ed;
+        color: #c0c4cc;
+        cursor: not-allowed;
+      }
+    }
+    .reset-btn {
+      display: inline-block;
+      overflow: hidden;
+      width: 25%;
+      border: 1px solid #dcdfe6;
+      border-left: none;
+      border-radius: 0 0.25rem 0.25rem 0;
+      box-sizing: border-box;
+      line-height: 2rem;
+      height: 2rem;
+      vertical-align: top;
+      text-align: center;
+      font-size: 0.875rem;
     }
   }
 }

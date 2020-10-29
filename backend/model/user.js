@@ -38,7 +38,11 @@ module.exports = {
         values: [params.username, params.password, 0]
       }
       db.row(query).then(
-        (dbRes) => res(dbRes),
+        async (dbRes) => {
+          let user = await findUserByName(params)
+          user = utils.underlineToCamelCase(user)[0]
+          res(user)
+        },
         (err) => rej(err)
       )
     }
@@ -60,16 +64,26 @@ module.exports = {
       (err) => rej('用户名或密码错误')
     )
   },
-  resetPassword: (params, res, rej) => {
-    let query = {
-      sql: 'UPDATE user SET password = ? WHERE id = ?',
-      timeout: 4000,
-      values: [params.password, params.userId, 0]
+  edit: async (params, res, rej) => {
+    let user = await findUserByName(params)
+    user = utils.underlineToCamelCase(user)[0]
+    if (user && user.id !== params.userId) {
+      rej('用户名称已存在')
+    } else {
+      let query = {
+        sql: 'UPDATE user SET username = ?,password = ?,email = ?,mobile = ? WHERE id = ?',
+        timeout: 4000,
+        values: [params.username, params.password, params.email, params.mobile, params.userId]
+      }
+      db.row(query).then(
+        async (dbRes) => {
+          let user = await findUserByName(params)
+          user = utils.underlineToCamelCase(user)[0]
+          res(user)
+        },
+        (err) => rej(err)
+      )
     }
-    db.row(query).then(
-      (dbRes) => res(dbRes),
-      (err) => rej(err)
-    )
   },
   getInfo: async (params, res, rej) => {
     let user = await findUser(params)

@@ -4,7 +4,7 @@ const userModel = require('../model/user')
 const utils = require('../lib/utils')
 
 // 注册
-router.post('Register', (req, res) => {
+router.post('/Register', (req, res) => {
   const params = req.body
   if (utils.checkParams(params, ['username', 'password'])) {
     res.status(400).send({ code: 400, data: null, msg: '用户名和密码不能为空' })
@@ -37,16 +37,16 @@ router.post('/Login', (req, res) => {
     )
   }
 })
-// 重设密码
-router.post('/Reset', (req, res) => {
+// 编辑
+router.post('/Edit', (req, res) => {
   const params = req.body
-  if (utils.checkParams(params, ['userId', 'password'])) {
-    res.status(400).send({ code: 400, data: null, msg: '用户Id和密码不能为空' })
+  if (utils.checkParams(params, ['userId', 'username', 'password'])) {
+    res.status(400).send({ code: 400, data: null, msg: '用户Id、用户名称和密码不能为空' })
   } else {
-    userModel.resetPassword(
+    userModel.edit(
       params,
       (dbRes) => {
-        res.status(200).send({ code: 200, data: null, msg: '密码重置成功' })
+        res.status(200).send({ code: 200, data: dbRes, msg: '修改成功' })
       },
       (err) => {
         res.status(400).send({ code: 400, data: null, msg: err })
