@@ -18,13 +18,13 @@ const row = (sql) => {
         reject(err)
         return
       }
-      connection.query(sql, function (error, res) {
+      connection.query(sql, function (error, results) {
         connection.release()
         if (error) {
           reject(error)
           return
         }
-        resolve(res)
+        resolve(results)
       })
     })
   })

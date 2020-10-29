@@ -95,6 +95,7 @@ export default {
         this.editForm.password = data.password
         this.editForm.email = data.email
         this.editForm.mobile = data.mobile
+        this.getUserInfo()
       }
     }
   },
@@ -165,7 +166,7 @@ export default {
     },
     edit() {
       this.usernameInfo = this.editForm.username ? null : '用户名不能为空'
-      this.passwordInfo = this.editForm.password ? null : '密码不能为空'
+      this.passwordInfo = this.editForm.password || !this.isChanged ? null : '密码不能为空'
       if (this.usernameInfo || this.passwordInfo) return
       if (this.editForm.email) {
         this.emailInfo = isEmail(this.editForm.email) ? null : '邮箱格式不正确'
@@ -195,6 +196,19 @@ export default {
         },
         fail: err => {
           this.$message(err.data.msg, 'error')
+        }
+      })
+    },
+    getUserInfo() {
+      uni.request({
+        url: '/api/user/info',
+        method: 'GET',
+        dataType: 'JSON',
+        data: {
+          userId: 1
+        },
+        success: res => {
+          console.log(res)
         }
       })
     }

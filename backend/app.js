@@ -2,6 +2,7 @@ const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
+const session = require('express-session')
 const logger = require('morgan')
 
 const taskRouter = require('./routes/task')
@@ -20,6 +21,14 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(
+  session({
+    secret: 'rexsun',
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: true
+  })
+)
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/task', taskRouter)

@@ -1,7 +1,7 @@
-const db = require('./db')
+const db = require('../lib/db')
 const utils = require('../lib/utils')
 const logModel = require('./log')
-const findUser = (params) => {
+const findUserById = (params) => {
   let query = {
     sql: `SELECT * FROM user where id = ?`,
     timeout: 4000,
@@ -86,7 +86,7 @@ module.exports = {
     }
   },
   getInfo: async (params, res, rej) => {
-    let user = await findUser(params)
+    let user = await findUserById(params)
     user = utils.underlineToCamelCase(user)[0]
     if (user) {
       res(user)
@@ -95,7 +95,7 @@ module.exports = {
     }
   },
   setPoint: async (params, res, rej) => {
-    let user = await findUser(params)
+    let user = await findUserById(params)
     user = utils.underlineToCamelCase(user)[0]
     let point = user.point
     if (params.calc === 'add') {
