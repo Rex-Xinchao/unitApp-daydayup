@@ -7,11 +7,11 @@
         <div class="form">
           <div class="form-item">
             <input v-model="username" class="input" placeholder="用户名称" />
-            <span v-if="usernameInfo" class="info">用户名不能为空</span>
+            <span v-if="usernameInfo" class="info">{{ usernameInfo }}</span>
           </div>
           <div class="form-item">
             <input v-model="password" class="input" type="password" placeholder="密码" />
-            <span v-if="passwordInfo" class="info">密码不能为空</span>
+            <span v-if="passwordInfo" class="info">{{ passwordInfo }}</span>
           </div>
           <div v-if="show === 'login'">
             <button @click="login" class="button" size="mini" type="primary">登 录</button>
@@ -19,7 +19,7 @@
           <div v-else>
             <div class="form-item">
               <input v-model="checkPassword" class="input" type="password" placeholder="确认密码" />
-              <span v-if="checkInfo" class="info">请确认密码</span>
+              <span v-if="checkInfo" class="info">{{ checkInfo }}</span>
             </div>
             <button @click="register" class="button" size="mini" type="primary">注 册</button>
           </div>
@@ -37,11 +37,11 @@ export default {
     return {
       show: 'login',
       username: null,
-      usernameInfo: false,
+      usernameInfo: null,
       password: null,
-      passwordInfo: false,
+      passwordInfo: null,
       checkPassword: null,
-      checkInfo: false
+      checkInfo: null
     }
   },
   computed: {
@@ -59,9 +59,9 @@ export default {
       this.checkPassword = null
     },
     login() {
-      this.usernameInfo = !this.username
-      this.passwordInfo = !this.password
-      if (this.usernameInfo || this.passwordInfo) return
+      this.usernameInfo = this.username ? null : '用户名不能为空'
+      this.passwordInfo = this.password ? null : '密码不能为空'
+      if (this.usernameInfo || this.passwordInfo || this.checkInfo) return
       uni.request({
         url: '/api/user/login',
         method: 'POST',
@@ -71,18 +71,42 @@ export default {
           password: this.password
         },
         success: res => {
-          console.log(res.data)
+          if (res.code === 200) {
+            this.$message('登录成功', 'success')
+          } else {
+            this.$message('登录失败', 'error')
+          }
         },
         fail: err => {
-          console.log(err)
+          this.$message('登录失败', 'error')
         }
       })
     },
     register() {
-      this.usernameInfo = !this.username
-      this.passwordInfo = !this.password
-      this.checkInfo = !this.checkPassword
+      this.usernameInfo = this.username ? null : '用户名不能为空'
+      this.passwordInfo = this.password ? null : '密码不能为空'
+      this.checkInfo = this.checkPassword ? null : '请确认密码'
+      if (this.password !== this.checkPassword) this.checkInfo = '俩次密码不一致'
       if (this.usernameInfo || this.passwordInfo || this.checkInfo) return
+      uni.request({
+        url: '/api/user/register',
+        method: 'POST',
+        dataType: 'JSON',
+        data: {
+          username: this.username,
+          password: this.password
+        },
+        success: res => {
+          if (res.code === 200) {
+            this.$message('注册成功', 'success')
+          } else {
+            this.$message('注册失败', 'error')
+          }
+        },
+        fail: err => {
+          alert('注册失败', 'error')
+        }
+      })
     }
   }
 }
