@@ -34,9 +34,9 @@ router.post('/Login', (req, res) => {
 })
 // 获取用户信息
 router.get('/Info', (req, res) => {
-  const checkFields = ['userId']
-  if (utils.checkParams(req.query, checkFields)) {
-    res.status(400).send(errorMsg(400001, checkFields))
+  const userId = req.cookies.daydayup_userId
+  if (!userId) {
+    res.status(400).send(errorMsg(400110))
   } else {
     userService.getUserInfo(req, res)
   }

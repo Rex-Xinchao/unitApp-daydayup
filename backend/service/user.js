@@ -30,14 +30,14 @@ module.exports = {
     // todo 加密和解密
     const user = await userDao.getUserByNameAndPassword(params)
     if (user) {
+      res.cookie(`daydayup_userId`, user.id, { maxAge: 3600 * 1000 })
       res.status(200).send({ code: 200, data: user })
     } else {
       res.status(400).send(errorMsg(400103))
     }
   },
   getUserInfo: async (req, res) => {
-    const params = req.query
-    const user = await userDao.getUserById(params.userId)
+    const user = await userDao.getUserById(req.cookies.daydayup_userId)
     if (!user) {
       res.status(400).send(errorMsg(400105))
     } else {

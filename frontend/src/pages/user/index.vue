@@ -90,12 +90,12 @@ export default {
     user: {
       immediate: true,
       handler(data) {
+        this.getUserInfo()
         if (!data) return
         this.editForm.username = data.username
         this.editForm.password = data.password
         this.editForm.email = data.email
         this.editForm.mobile = data.mobile
-        this.getUserInfo()
       }
     }
   },
@@ -221,11 +221,11 @@ export default {
         url: '/api/user/info',
         method: 'GET',
         dataType: 'JSON',
-        data: {
-          userId: 1
-        },
         success: res => {
-          console.log(res)
+          if (res.data.code === 200) {
+            if (this.user.id) return
+            this.$store.dispatch('setUser', res.data.data)
+          }
         }
       })
     }
