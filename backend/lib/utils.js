@@ -1,5 +1,6 @@
+const CryptoJS = require('crypto-js')
 // common
-function getNowFormatDate() {
+const getNowFormatDate = () => {
   let date = new Date()
   let year = date.getFullYear() // 年
   let month = date.getMonth() + 1 // 月
@@ -17,7 +18,7 @@ function getNowFormatDate() {
   return currentdate
 }
 
-function getRandomString(len = 16) {
+const getRandomString = (len = 16) => {
   let res = ''
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz0123456789'
   for (let i = 0; i < len; i++) {
@@ -26,7 +27,7 @@ function getRandomString(len = 16) {
   return res
 }
 
-function checkParams(params, list) {
+const checkParams = (params, list) => {
   let emptyList = []
   list.length &&
     list.forEach((key) => {
@@ -37,14 +38,14 @@ function checkParams(params, list) {
   return emptyList.length > 0
 }
 
-function camelCase(string) {
+const camelCase = (string) => {
   // Support: IE9-11+ 驼峰
   return string.replace(/_([a-z])/g, function (all, letter) {
     return letter.toUpperCase()
   })
 }
 
-function underlineToCamelCase(item) {
+const underlineToCamelCase = (item) => {
   if (item === null) {
     return ''
   }
@@ -82,9 +83,31 @@ function underlineToCamelCase(item) {
   }
 }
 
+const encrypt = ($str, key) => {
+  let _key = CryptoJS.enc.Latin1.parse(key),
+    _iv = CryptoJS.enc.Latin1.parse('daydayup')
+  return CryptoJS.AES.encrypt($str, _key, {
+    iv: _iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.ZeroPadding
+  }).toString()
+}
+
+const decrypt = ($str, key) => {
+  let _key = CryptoJS.enc.Latin1.parse(key),
+    _iv = CryptoJS.enc.Latin1.parse('daydayup')
+  return CryptoJS.AES.decrypt($str, _key, {
+    iv: _iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.ZeroPadding
+  }).toString(CryptoJS.enc.Latin1)
+}
+
 module.exports = {
   getNowFormatDate,
   getRandomString,
   checkParams,
-  underlineToCamelCase
+  underlineToCamelCase,
+  encrypt,
+  decrypt
 }

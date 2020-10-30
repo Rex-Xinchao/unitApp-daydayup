@@ -1,6 +1,6 @@
 const errorMap = {
-  400100: (data) => {
-    return { code: 400100, data: data, msg: '用户名和密码不能为空' }
+  400001: (data, fields) => {
+    return { code: 400001, data: data, msg: `${fields.join(',')}不能为空` }
   },
   400101: (data) => {
     return { code: 400101, data: data, msg: '用户已存在' }

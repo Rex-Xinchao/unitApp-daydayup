@@ -1,3 +1,8 @@
+/* 
+  User Dao
+  @author rex.sun
+  @date 2020/10/29
+*/
 const db = require('../lib/db')
 const User = require('../entity/user')
 const TIMEOUT = 4000
@@ -34,15 +39,25 @@ module.exports = {
       () => null
     )
   },
-  login: function ({ username, password }, success, fail) {
+  getUserByNameAndPassword: function ({ username, password }) {
     const query = {
       sql: `SELECT * FROM user where username = ? and password = ?`,
       timeout: TIMEOUT,
       values: [username, password]
     }
     return db.row(query).then(
-      (dbRes) => success(getUser(dbRes[0])),
-      (err) => fail(err)
+      (dbRes) => getUser(dbRes[0]),
+      () => null
+    )
+  },
+  getUsers: function () {
+    const query = {
+      sql: `SELECT * FROM user`,
+      timeout: TIMEOUT
+    }
+    return db.row(query).then(
+      (dbRes) => getUserList(dbRes),
+      () => []
     )
   },
   createUser: function ({ username, password }, success, fail) {

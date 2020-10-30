@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js'
+
 const formatTime = (date) => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -24,8 +26,30 @@ const isMobile = (str) => {
   return reg.test(str)
 }
 
+const encrypt = ($str, key) => {
+  let _key = CryptoJS.enc.Latin1.parse(key),
+    _iv = CryptoJS.enc.Latin1.parse('daydayup')
+  return CryptoJS.AES.encrypt($str, _key, {
+    iv: _iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.ZeroPadding
+  }).toString()
+}
+
+const decrypt = ($str, key) => {
+  let _key = CryptoJS.enc.Latin1.parse(key),
+    _iv = CryptoJS.enc.Latin1.parse('daydayup')
+  return CryptoJS.AES.decrypt($str, _key, {
+    iv: _iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.ZeroPadding
+  }).toString(CryptoJS.enc.Latin1)
+}
+
 module.exports = {
   formatTime,
   isEmail,
-  isMobile
+  isMobile,
+  encrypt,
+  decrypt
 }

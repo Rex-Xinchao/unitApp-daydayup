@@ -64,7 +64,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { isEmail, isMobile } from '../../libs/util'
+import { isEmail, isMobile, encrypt } from '../../libs/util'
 export default {
   data() {
     return {
@@ -119,12 +119,29 @@ export default {
       this.passwordInfo = this.password ? null : '密码不能为空'
       if (this.usernameInfo || this.passwordInfo || this.checkInfo) return
       uni.request({
+        url: '/api/user/key',
+        method: 'Get',
+        dataType: 'JSON',
+        success: res => {
+          if (res.data.code === 200) {
+            this.loginAction(res.data.data)
+          } else {
+            this.$message('res.data.msg', 'error')
+          }
+        },
+        fail: err => {
+          this.$message(err.data.msg, 'error')
+        }
+      })
+    },
+    loginAction(key) {
+      uni.request({
         url: '/api/user/login',
         method: 'POST',
         dataType: 'JSON',
         data: {
           username: this.username,
-          password: this.password
+          password: encrypt(this.password, key)
         },
         success: res => {
           if (res.data.code === 200) {

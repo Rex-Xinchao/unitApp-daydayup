@@ -1,5 +1,11 @@
+/* 
+  User Service
+  @author rex.sun
+  @date 2020/10/29
+*/
 const userDao = require('../dao/user')
 const errorMsg = require('../lib/errorMsg')
+const utils = require('../lib/utils')
 module.exports = {
   register: async (req, res) => {
     const params = req.body
@@ -20,19 +26,23 @@ module.exports = {
   },
   login: async (req, res) => {
     const params = req.body
-    userDao.login(
-      params,
-      (user) => {
-        if (user) {
-          res.status(200).send({ code: 200, data: user })
-        } else {
-          res.status(400).send(errorMsg(400103))
-        }
-      },
-      (err) => {
-        res.status(400).send(errorMsg(400103, err))
-      }
-    )
+    params.password = utils.decrypt(params.password, req.session.key)
+    // todo 加密和解密
+    const user = await userDao.getUserByNameAndPassword(params)
+    if (user) {
+      res.status(200).send({ code: 200, data: user })
+    } else {
+      res.status(400).send(errorMsg(400103))
+    }
+  },
+  getUserInfo: async (req, res) => {
+    const params = req.query
+    const user = await userDao.getUserById(params.userId)
+    if (!user) {
+      res.status(400).send(errorMsg(400105))
+    } else {
+      res.status(200).send({ code: 200, data: user })
+    }
   },
   edit: async (req, res) => {
     const params = req.body
@@ -49,15 +59,6 @@ module.exports = {
           res.status(400).send(errorMsg(400104, err))
         }
       )
-    }
-  },
-  getUserInfo: async (req, res) => {
-    const params = req.query
-    const user = await userDao.getUserById(params.userId)
-    if (!user) {
-      res.status(400).send(errorMsg(400105))
-    } else {
-      res.status(200).send({ code: 200, data: user })
     }
   }
 }
