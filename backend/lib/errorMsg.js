@@ -17,7 +17,10 @@ const errorMap = {
   400105: (data) => {
     return { code: 400105, data: data, msg: '用户不存在' }
   },
-  400106: '',
+  400201: (data) => {
+    return { code: 400105, data: data, msg: '查询失败' }
+  },
+  400202: '',
   400110: (data) => {
     return { code: 400110, data: data, msg: '用户未登录' }
   }

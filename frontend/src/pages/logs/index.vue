@@ -19,7 +19,9 @@
         <p v-if="loading">
           <span class="refresh-icon"></span>
         </p>
-        <p v-else-if="loadEnd">暂无更多数据</p>
+        <p v-else-if="loadEnd">
+          {{ user.id ? '暂无更多数据' : '前先登录账号' }}
+        </p>
         <p v-else cla>加载更多</p>
       </div>
     </scroll-view>
@@ -27,6 +29,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -41,29 +44,66 @@ export default {
         scrollTop: 0
       },
       loading: false,
-      loadEnd: false
+      loadEnd: false,
+      page: 1,
+      total: 0
     }
   },
-  onLoad() {
-    this.getData()
+  computed: {
+    ...mapGetters(['user'])
+  },
+  watch: {
+    user: {
+      immediate: true,
+      handler(data) {
+        this.getUserInfo()
+        if (!data.id) return
+        this.getLogList()
+      }
+    }
   },
   methods: {
     lower(e) {
+      if (!this.user.id) return
       if (this.loadEnd) return
-      this.getData()
+      this.page += 1
+      this.getLogList()
     },
-    getData() {
+    getLogList() {
       this.loading = true
-      setTimeout(() => {
-        this.loading = false
-        if (this.logs.length < 50) {
-          for (let i = 0; i < 20; i++) {
-            this.logs.push({ type: 'ache', name: '长跑达人', time: '2020/10/28 11:38', point: 50, option: 'del' })
+      uni.request({
+        url: '/api/log/list',
+        method: 'GET',
+        dataType: 'JSON',
+        data: {
+          userId: this.user.id,
+          page: this.page,
+          size: 20
+        },
+        success: res => {
+          this.loading = false
+          if (res.data.code === 200) {
+            this.logs.push(...res.data.data.list)
+            this.total = res.data.data.total
+            if (this.total === this.logs.length) {
+              this.loadEnd = true
+            }
           }
-        } else {
-          this.loadEnd = true
         }
-      }, 300)
+      })
+    },
+    getUserInfo() {
+      uni.request({
+        url: '/api/user/info',
+        method: 'GET',
+        dataType: 'JSON',
+        success: res => {
+          if (res.data.code === 200) {
+            if (this.user.id) return
+            this.$store.dispatch('setUser', res.data.data)
+          }
+        }
+      })
     }
   }
 }
@@ -105,11 +145,17 @@ export default {
     }
 
     .left {
-      width: 40%;
+      width: 50%;
+      overflow: hidden;
+
+      .name {
+        white-space: nowrap;
+      }
     }
 
     .right {
-      width: 60%;
+      width: 50%;
+      overflow: hidden;
 
       .time {
         width: 100%;

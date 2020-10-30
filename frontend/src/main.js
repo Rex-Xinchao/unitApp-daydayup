@@ -6,7 +6,6 @@ require('./libs/loading')
 
 Vue.config.productionTip = false
 
-console.log(Message)
 Vue.prototype.$message = Message
 Vue.prototype.$store = store
 App.mpType = 'app'

@@ -1,28 +1,32 @@
-const express = require("express");
-const router = express.Router();
-const logModel = require("../model/log");
-const utils = require("../lib/utils");
+/* 
+  Log Controller
+  @author rex.sun
+  @date 2020/10/30
+*/
+const express = require('express')
+const router = express.Router()
+const logService = require('../service/log')
+const utils = require('../lib/utils')
+const errorMsg = require('../lib/errorMsg')
 
-/* GET home page. */
-router.get("/list", (req, res, next) => {
-  const params = req.query;
-  utils.checkQueryParams(req, res, ['openid']);
-  logModel.getList(
-    params,
-    (dbRes, total) => {
-      res.status(200).json({
-        code: 200,
-        data: {
-          total:total,
-          list: utils.underlineToCamelCase(dbRes)
-        },
-        msg: "success",
-      });
-    },
-    (err) => {
-      res.status(400).send(err);
-    }
-  );
-});
+router.get('/list', (req, res, next) => {
+  const checkFields = ['userId']
+  req.query.size = req.query.size ? Number(req.query.size) : 10
+  req.query.page = req.query.page ? Number(req.query.page) : 1
+  if (utils.checkParams(req.query, checkFields)) {
+    res.status(400).send(errorMsg(400001, checkFields))
+  } else {
+    logService.list(req, res)
+  }
+})
 
-module.exports = router;
+router.get('/add', (req, res, next) => {
+  const checkFields = ['userId', 'name', 'type', 'option', 'point']
+  if (utils.checkParams(req.body, checkFields)) {
+    res.status(400).send(errorMsg(400001, checkFields))
+  } else {
+    logService.add(req, res)
+  }
+})
+
+module.exports = router
