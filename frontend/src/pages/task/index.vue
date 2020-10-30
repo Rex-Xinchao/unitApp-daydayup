@@ -1,44 +1,39 @@
 <template>
   <view class="content">
-    <view>
-      <text class="title">{{ title }}</text>
-    </view>
+    <listData title="每日任务" :listData="daily"></listData>
+    <listData title="每周任务" :listData="weekly"></listData>
+    <listData title="每月任务" :listData="monthly"></listData>
+    <listData title="额外任务" :listData="others"></listData>
   </view>
 </template>
 
 <script>
+import listData from '../../components/listData'
 export default {
   data() {
     return {
-      title: 'Hello'
+      daily: {
+        life: [
+          {
+            name: '测试',
+            point: 100,
+            limit: 2,
+            current: 1
+          }
+        ]
+      },
+      weekly: {},
+      monthly: {},
+      others: {},
+      isShow: false
     }
   },
-  onLoad() {},
-  methods: {}
+  components: { listData },
+  onLoad() {
+    this.initData()
+  },
+  methods: {
+    initData() {}
+  }
 }
 </script>
-
-<style>
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin: 200rpx auto 50rpx auto;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
-}
-</style>
