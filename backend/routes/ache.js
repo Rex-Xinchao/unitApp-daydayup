@@ -1,28 +1,33 @@
-const express = require("express");
-const router = express.Router();
-const acheModel = require("../model/ache");
-const logModel = require("../model/log");
-const utils = require("../lib/utils");
+/* 
+  Ache Controller
+  @author rex.sun
+  @date 2020/10/30
+*/
+const express = require('express')
+const router = express.Router()
+const acheService = require('../service/ache')
+const utils = require('../lib/utils')
+const errorMsg = require('../lib/errorMsg')
 
-/* GET home page. */
-router.get("/list", (req, res, next) => {
-  const params = req.query;
-  utils.checkQueryParams(req, res, ["openid"]);
-  acheModel.getList(
-    params,
-    (data) => res.status(200).json({ code: 200, data: data }),
-    (err) => res.status(400).send(err)
-  );
-});
+router.get('/list', (req, res, next) => {
+  const checkFields = ['userId']
+  if (!req.query.type || req.query.type === 'all') {
+    req.query.type = null
+  }
+  if (utils.checkParams(req.query, checkFields)) {
+    res.status(400).send(errorMsg(400001, checkFields))
+  } else {
+    acheService.list(req, res)
+  }
+})
 
-router.post("/finish", (req, res, next) => {
-  const params = req.body;
-  utils.checkBodyParams(req, res, ["id", "openid"]);
-  acheModel.finish(
-    params,
-    (data) => res.status(200).json({ code: 200, data: data }),
-    (err) => res.status(400).send({ code: 50010, data: err })
-  );
-});
+router.post('/finish', (req, res, next) => {
+  const checkFields = ['userId', 'acheId']
+  if (utils.checkParams(req.body, checkFields)) {
+    res.status(400).send(errorMsg(400001, checkFields))
+  } else {
+    acheService.finish(req, res)
+  }
+})
 
-module.exports = router;
+module.exports = router

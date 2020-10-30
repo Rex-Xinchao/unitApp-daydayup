@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -43,8 +44,16 @@ export default {
       }
     }
   },
-  onLoad() {
-    this.initData()
+  computed: {
+    ...mapGetters(['user'])
+  },
+  watch: {
+    user: {
+      immediate: true,
+      handler(data) {
+        this.initData()
+      }
+    }
   },
   methods: {
     initData() {
@@ -53,7 +62,8 @@ export default {
         method: 'GET',
         dataType: 'JSON',
         data: {
-          type: this.type
+          type: this.type,
+          userId: this.user.id
         },
         success: res => {
           if (res.data.code === 200) {
@@ -71,11 +81,12 @@ export default {
     },
     finish(id) {
       uni.request({
-        url: '/api/ache/list',
+        url: '/api/ache/finish',
         method: 'POST',
         dataType: 'JSON',
         data: {
-          id: id
+          userId: this.user.id,
+          acheId: id
         },
         success: res => {
           if (res.data.code === 200) {

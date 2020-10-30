@@ -18,11 +18,11 @@ const getLogList = (list) => {
 }
 
 module.exports = {
-  getLogById: function (userId) {
+  getLogById: function (id) {
     const query = {
       sql: `SELECT * FROM log where id = ?`,
       timeout: TIMEOUT,
-      values: [userId]
+      values: [id]
     }
     return db.row(query).then(
       (dbRes) => getLog(dbRes[0]),
