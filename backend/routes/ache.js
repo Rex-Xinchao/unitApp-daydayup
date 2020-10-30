@@ -10,20 +10,25 @@ const utils = require('../lib/utils')
 const errorMsg = require('../lib/errorMsg')
 
 router.get('/list', (req, res, next) => {
-  const checkFields = ['userId']
   if (!req.query.type || req.query.type === 'all') {
     req.query.type = null
   }
-  if (utils.checkParams(req.query, checkFields)) {
-    res.status(400).send(errorMsg(400001, checkFields))
+  const userId = req.cookies.daydayup_userId
+  req.query.userId = userId
+  if (!userId) {
+    res.status(400).send(errorMsg(400110))
   } else {
     acheService.list(req, res)
   }
 })
 
 router.post('/finish', (req, res, next) => {
-  const checkFields = ['userId', 'acheId']
-  if (utils.checkParams(req.body, checkFields)) {
+  const checkFields = ['acheId']
+  const userId = req.cookies.daydayup_userId
+  req.body.userId = userId
+  if (!userId) {
+    res.status(400).send(errorMsg(400110))
+  } else if (utils.checkParams(req.body, checkFields)) {
     res.status(400).send(errorMsg(400001, checkFields))
   } else {
     acheService.finish(req, res)

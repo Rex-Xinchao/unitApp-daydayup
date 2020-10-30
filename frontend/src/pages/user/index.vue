@@ -200,7 +200,6 @@ export default {
         method: 'POST',
         dataType: 'JSON',
         data: {
-          userId: this.user.id,
           username: this.editForm.username,
           password: this.editForm.password,
           email: this.editForm.email,

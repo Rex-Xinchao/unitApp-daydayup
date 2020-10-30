@@ -62,8 +62,7 @@ export default {
         method: 'GET',
         dataType: 'JSON',
         data: {
-          type: this.type,
-          userId: this.user.id
+          type: this.type
         },
         success: res => {
           if (res.data.code === 200) {
@@ -85,7 +84,6 @@ export default {
         method: 'POST',
         dataType: 'JSON',
         data: {
-          userId: this.user.id,
           acheId: id
         },
         success: res => {

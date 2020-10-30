@@ -35,6 +35,7 @@ router.post('/Login', (req, res) => {
 // 获取用户信息
 router.get('/Info', (req, res) => {
   const userId = req.cookies.daydayup_userId
+  req.query.userId = userId
   if (!userId) {
     res.status(400).send(errorMsg(400110))
   } else {
@@ -44,7 +45,11 @@ router.get('/Info', (req, res) => {
 // 编辑
 router.post('/Edit', (req, res) => {
   const checkFields = ['userId', 'username']
-  if (utils.checkParams(req.body, checkFields)) {
+  const userId = req.cookies.daydayup_userId
+  req.body.userId = userId
+  if (!userId) {
+    res.status(400).send(errorMsg(400110))
+  } else if (utils.checkParams(req.body, checkFields)) {
     res.status(400).send(errorMsg(400001, checkFields))
   } else {
     userService.edit(req, res)

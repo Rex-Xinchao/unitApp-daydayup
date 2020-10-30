@@ -74,7 +74,6 @@ export default {
         method: 'GET',
         dataType: 'JSON',
         data: {
-          userId: this.user.id,
           page: this.page,
           size: 20
         },
@@ -96,7 +95,6 @@ export default {
         method: 'POST',
         dataType: 'JSON',
         data: {
-          userId: res.data.data.id,
           name: 1,
           type: 'ache',
           optType: 'del',
