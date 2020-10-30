@@ -20,7 +20,9 @@ const errorMap = {
   400201: (data) => {
     return { code: 400105, data: data, msg: '添加日志失败' }
   },
-  400202: '',
+  400301: (data) => {
+    return { code: 400105, data: data, msg: '完成成就失败' }
+  },
   400110: (data) => {
     return { code: 400110, data: data, msg: '用户未登录' }
   }

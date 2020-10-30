@@ -14,7 +14,7 @@ const getNowFormatDate = () => {
   if (strDate >= 0 && strDate <= 9) {
     strDate = '0' + strDate
   }
-  const currentdate = year + '-' + month + '-' + strDate + ' ' + hour + ':' + minute + ':' + second
+  const currentdate = year + '/' + month + '/' + strDate + ' ' + hour + ':' + minute
   return currentdate
 }
 
