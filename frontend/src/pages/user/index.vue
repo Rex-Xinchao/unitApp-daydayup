@@ -29,6 +29,10 @@
     <div v-else class="user-info">
       <div class="operation-main">
         <div class="form">
+          <div class="point-form">
+            <span>剩余积分：</span>
+            <span>{{ user.info || 0 }}</span>
+          </div>
           <div class="form-item">
             <input v-model="editForm.username" class="input" placeholder="用户名称" />
             <span v-if="usernameInfo" class="info">{{ usernameInfo }}</span>
@@ -311,6 +315,12 @@ export default {
       font-size: 0.875rem;
     }
   }
+}
+
+.point-form {
+  line-height: 2.4rem;
+  border-bottom: 1px dashed #cccccc;
+  margin-bottom: 1rem;
 }
 
 .input {
