@@ -9,7 +9,7 @@
         <div class="log-item right">
           <p class="time">{{ item.time }}</p>
           <p class="point">
-            <span v-if="item.option === 'add'" class="point-type_add">+</span>
+            <span v-if="item.optType === 'add'" class="point-type_add">+</span>
             <span v-else class="point-type_del">-</span>
             <span class="point-num">{{ item.point }}</span>
           </p>
@@ -22,7 +22,7 @@
         <p v-else-if="loadEnd">
           {{ user.id ? '暂无更多数据' : '前先登录账号' }}
         </p>
-        <p v-else cla>加载更多</p>
+        <p v-else cla>{{ user.id ? '加载更多' : '前先登录账号' }}</p>
       </div>
     </scroll-view>
   </div>
@@ -93,6 +93,7 @@ export default {
       })
     },
     getUserInfo() {
+      if (this.user.id) return
       uni.request({
         url: '/api/user/info',
         method: 'GET',
@@ -101,6 +102,30 @@ export default {
           if (res.data.code === 200) {
             if (this.user.id) return
             this.$store.dispatch('setUser', res.data.data)
+          }
+        }
+      })
+    },
+    addLog() {
+      uni.request({
+        url: '/api/log/add',
+        method: 'POST',
+        dataType: 'JSON',
+        data: {
+          userId: res.data.data.id,
+          name: 1,
+          type: 'ache',
+          optType: 'del',
+          point: 1
+        },
+        success: res => {
+          this.loading = false
+          if (res.data.code === 200) {
+            this.logs.push(...res.data.data.list)
+            this.total = res.data.data.total
+            if (this.total === this.logs.length) {
+              this.loadEnd = true
+            }
           }
         }
       })

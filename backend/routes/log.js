@@ -20,8 +20,8 @@ router.get('/list', (req, res, next) => {
   }
 })
 
-router.get('/add', (req, res, next) => {
-  const checkFields = ['userId', 'name', 'type', 'option', 'point']
+router.post('/add', (req, res, next) => {
+  const checkFields = ['userId', 'name', 'type', 'optType', 'point']
   if (utils.checkParams(req.body, checkFields)) {
     res.status(400).send(errorMsg(400001, checkFields))
   } else {

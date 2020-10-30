@@ -22,7 +22,7 @@ module.exports = {
     const query = {
       sql: `SELECT * FROM log where id = ?`,
       timeout: TIMEOUT,
-      values: [id]
+      values: [userId]
     }
     return db.row(query).then(
       (dbRes) => getLog(dbRes[0]),
@@ -62,12 +62,12 @@ module.exports = {
       }
     )
   },
-  addLog: function ({ userId, name, type, option, point }, success, err) {
+  addLog: function ({ userId, name, type, optType, point }, success, fail) {
     let time = utils.getNowFormatDate()
     const query = {
-      sql: `INSERT INTO user(userId,name,type,time,option,point) VALUE (?,?,?,?,?,?)`,
+      sql: `INSERT INTO log(userId,name,type,time,optType,point) VALUE (?,?,?,?,?,?)`,
       timeout: TIMEOUT,
-      values: [userId, name, type, time, option, point]
+      values: [userId, name, type, time, optType, point]
     }
     return db.row(query).then(
       async (dbRes) => {
