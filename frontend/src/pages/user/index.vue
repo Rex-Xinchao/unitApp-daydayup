@@ -90,7 +90,6 @@ export default {
     user: {
       immediate: true,
       handler(data) {
-        this.getUserInfo()
         if (!data) return
         this.editForm.username = data.username
         this.editForm.password = data.password
@@ -213,19 +212,6 @@ export default {
         },
         fail: err => {
           this.$message(err.data.msg, 'error')
-        }
-      })
-    },
-    getUserInfo() {
-      uni.request({
-        url: '/api/user/info',
-        method: 'GET',
-        dataType: 'JSON',
-        success: res => {
-          if (res.data.code === 200) {
-            if (this.user.id) return
-            this.$store.dispatch('setUser', res.data.data)
-          }
         }
       })
     }

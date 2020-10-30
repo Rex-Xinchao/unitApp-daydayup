@@ -55,21 +55,19 @@ export default {
   watch: {
     user: {
       immediate: true,
-      handler(data) {
-        this.getUserInfo()
-        if (!data.id) return
+      handler() {
         this.getLogList()
       }
     }
   },
   methods: {
     lower(e) {
-      if (!this.user.id) return
       if (this.loadEnd) return
       this.page += 1
       this.getLogList()
     },
     getLogList() {
+      if (!this.user.id) return
       this.loading = true
       uni.request({
         url: '/api/log/list',
@@ -88,20 +86,6 @@ export default {
             if (this.total === this.logs.length) {
               this.loadEnd = true
             }
-          }
-        }
-      })
-    },
-    getUserInfo() {
-      if (this.user.id) return
-      uni.request({
-        url: '/api/user/info',
-        method: 'GET',
-        dataType: 'JSON',
-        success: res => {
-          if (res.data.code === 200) {
-            if (this.user.id) return
-            this.$store.dispatch('setUser', res.data.data)
           }
         }
       })
