@@ -17,8 +17,8 @@ module.exports = {
       req.body,
       async () => {
         let ache = await acheDao.getById(req.body.acheId)
-        let user = await userDao.getById(ache.userId)
-        let point = user.point + ache.point
+        let user = await userDao.getById(req.body.userId)
+        let point = Number(user.point) + Number(ache.point)
         let responeseMsg = ache
         let isError = false
         await userDao.setPoint(

@@ -31,7 +31,7 @@
         <div class="form">
           <div class="point-form">
             <span>剩余积分：</span>
-            <span>{{ user.info || 0 }}</span>
+            <span>{{ user.point || 0 }}</span>
           </div>
           <div class="form-item">
             <input v-model="editForm.username" class="input" placeholder="用户名称" />
