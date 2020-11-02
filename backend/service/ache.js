@@ -9,15 +9,15 @@ const userDao = require('../dao/user')
 const errorMsg = require('../lib/errorMsg')
 module.exports = {
   list: async (req, res) => {
-    let result = await acheDao.getList(req.query)
+    let result = await acheDao.list(req.query)
     res.status(200).send({ code: 200, data: result })
   },
   finish: async (req, res) => {
     acheDao.finish(
       req.body,
-      async (dbRes) => {
+      async () => {
         let ache = await acheDao.getById(req.body.acheId)
-        let user = await userDao.getUserById(ache.userId)
+        let user = await userDao.getById(ache.userId)
         let point = user.point + ache.point
         let responeseMsg = ache
         let isError = false
@@ -32,7 +32,7 @@ module.exports = {
             responeseMsg = errorMsg(400201, err)
           }
         )
-        await logDao.addLog(
+        await logDao.add(
           {
             ...ache,
             optType: 'add',

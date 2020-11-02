@@ -4,7 +4,17 @@
   @date 2020/10/29
 */
 const db = require('../lib/db')
+const Achievement = require('../entity/ache')
 const TIMEOUT = 4000
+const getAche = (obj) => {
+  if (!obj) return null
+  return new Achievement(obj).toObject()
+}
+const getAcheList = (list) => {
+  if (!list) return []
+  if (!list.length) return []
+  return list.map((item) => new Achievement(item).toObject())
+}
 
 module.exports = {
   getById: function (id) {
@@ -14,21 +24,41 @@ module.exports = {
       values: [id]
     }
     return db.row(query).then(
-      (dbRes) => dbRes[0],
+      (dbRes) => getAche(dbRes[0]),
       () => null
     )
   },
-  getList: function ({ userId, type }) {
+  getTotal: function ({ userId, type }) {
+    const query = {
+      sql: `SELECT COUNT(*) AS TOTAL FROM achievement where userId = ? ${type ? 'and type = ?' : ''}`,
+      timeout: TIMEOUT,
+      values: [userId]
+    }
+    return db.row(query).then(
+      (dbRes) => dbRes[0]['TOTAL'],
+      () => 0
+    )
+  },
+  list: function ({ userId, type }) {
     const query = {
       sql: `SELECT * FROM achievement where userId = ? ${type ? 'and type = ?' : ''}`,
       timeout: TIMEOUT,
       values: [userId, type]
     }
     return db.row(query).then(
-      (dbRes) => {
-        return dbRes
+      async (dbRes) => {
+        let total = await this.getTotal(userId)
+        return {
+          list: getAcheList(dbRes),
+          total: total
+        }
       },
-      () => []
+      () => {
+        return {
+          list: [],
+          total: 0
+        }
+      }
     )
   },
   finish: function ({ acheId }, success, fail) {

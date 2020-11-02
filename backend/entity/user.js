@@ -7,19 +7,6 @@ class User {
     this.email = obj.email
     this.mobile = obj.mobile
   }
-  edit(username, password, email, mobile) {
-    this.username = username
-    this.password = password
-    this.email = email
-    this.mobile = mobile
-  }
-  setPoint(point, type = 'add') {
-    if (type === add) {
-      this.point += point
-    } else if (type === 'delete') {
-      this.point -= point
-    }
-  }
   toObject() {
     return {
       id: this.id,

@@ -66,7 +66,7 @@ export default {
         },
         success: res => {
           if (res.data.code === 200) {
-            this.typeList = res.data.data
+            this.typeList = res.data.data.list
             this.total = res.data.data.length
             this.finished = res.data.data.filter(item => item.finished == 1).length
           }

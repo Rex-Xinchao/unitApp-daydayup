@@ -18,7 +18,7 @@ const getLogList = (list) => {
 }
 
 module.exports = {
-  getLogById: function (id) {
+  getById: function (id) {
     const query = {
       sql: `SELECT * FROM log where id = ?`,
       timeout: TIMEOUT,
@@ -29,18 +29,18 @@ module.exports = {
       () => null
     )
   },
-  getLogTotal: function (userId) {
+  getTotal: function (userId) {
     const query = {
-      sql: `SELECT * FROM log where userId = ?`,
+      sql: `SELECT COUNT(*) AS TOTAL FROM log where userId = ?`,
       timeout: TIMEOUT,
       values: [userId]
     }
     return db.row(query).then(
-      (dbRes) => dbRes.length,
+      (dbRes) => dbRes[0]['TOTAL'],
       () => 0
     )
   },
-  getLogList: function ({ userId, size, page }) {
+  list: function ({ userId, size, page }) {
     const query = {
       sql: `SELECT * FROM log where userId = ? ORDER BY time DESC LIMIT ? OFFSET ?`,
       timeout: TIMEOUT,
@@ -48,13 +48,13 @@ module.exports = {
     }
     return db.row(query).then(
       async (dbRes) => {
-        let total = await this.getLogTotal(userId)
+        let total = await this.getTotal(userId)
         return {
           list: getLogList(dbRes),
           total: total
         }
       },
-      (err) => {
+      () => {
         return {
           list: [],
           total: 0
@@ -62,7 +62,7 @@ module.exports = {
       }
     )
   },
-  addLog: function ({ userId, name, type, optType, point }, success, fail) {
+  add: function ({ userId, name, type, optType, point }, success, fail) {
     let time = utils.getNowFormatDate()
     const query = {
       sql: `INSERT INTO log(userId,name,type,time,optType,point) VALUE (?,?,?,?,?,?)`,
@@ -71,7 +71,7 @@ module.exports = {
     }
     return db.row(query).then(
       async (dbRes) => {
-        const log = await this.getLogById(dbRes.insertId)
+        const log = await this.getById(dbRes.insertId)
         success(log)
       },
       (err) => fail(err)

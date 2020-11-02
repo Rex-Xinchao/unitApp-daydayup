@@ -7,11 +7,11 @@ const logDao = require('../dao/log')
 const errorMsg = require('../lib/errorMsg')
 module.exports = {
   list: async (req, res) => {
-    let result = await logDao.getLogList(req.query)
+    let result = await logDao.list(req.query)
     res.status(200).send({ code: 200, data: result })
   },
   add: async (req, res) => {
-    logDao.addLog(
+    logDao.add(
       req.body,
       (dbRes) => {
         res.status(200).send({ code: 200, data: dbRes })
