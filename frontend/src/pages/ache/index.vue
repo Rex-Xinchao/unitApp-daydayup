@@ -15,7 +15,7 @@
       </view>
       <view class="ache-list">
         <text>*成就*</text>
-        <view class="list-main" v-for="item in typeList" :key="index">
+        <view class="list-main" v-for="(item, index) in typeList" :key="index">
           <view class="name">{{ item.name }}</view>
           <view class="point">成就点：{{ item.point }}</view>
           <span v-if="item.finished === 1" class="submit-button submit-button_finish">已完成</span>
@@ -67,8 +67,8 @@ export default {
         success: res => {
           if (res.data.code === 200) {
             this.typeList = res.data.data.list
-            this.total = res.data.data.length
-            this.finished = res.data.data.filter(item => item.finished == 1).length
+            this.total = res.data.data.total
+            this.finished = this.typeList.filter(item => item.finished == 1).length
           }
         }
       })

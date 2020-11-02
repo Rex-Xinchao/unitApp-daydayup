@@ -47,7 +47,7 @@ module.exports = {
     }
     return db.row(query).then(
       async (dbRes) => {
-        let total = await this.getTotal(userId)
+        let total = await this.getTotal({ userId, type })
         return {
           list: getAcheList(dbRes),
           total: total

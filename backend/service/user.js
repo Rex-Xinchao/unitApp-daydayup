@@ -16,6 +16,7 @@ module.exports = {
       userDao.create(
         params,
         (dbRes) => {
+          res.cookie(`daydayup_userId`, dbRes.id, { maxAge: 3600 * 1000 })
           res.status(200).send({ code: 200, data: dbRes })
         },
         (err) => {

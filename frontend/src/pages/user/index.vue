@@ -102,8 +102,22 @@ export default {
       }
     }
   },
-  onLoad() {},
+  onShow() {
+    this.initUser()
+  },
   methods: {
+    initUser() {
+      uni.request({
+        url: '/api/user/info',
+        method: 'GET',
+        dataType: 'JSON',
+        success: res => {
+          if (res.data.code === 200) {
+            this.$store.dispatch('setUser', res.data.data)
+          }
+        }
+      })
+    },
     showChange(show) {
       this.show = show
       this.usernameInfo = false

@@ -53,7 +53,7 @@ module.exports = {
     }
     return db.row(query).then(
       async (dbRes) => {
-        const user = await this.getUserById(dbRes.insertId)
+        const user = await this.getById(dbRes.insertId)
         success(user)
       },
       (err) => fail(err)
@@ -67,7 +67,7 @@ module.exports = {
     }
     return db.row(query).then(
       async () => {
-        const user = await this.getUserById(userId)
+        const user = await this.getById(userId)
         success(user)
       },
       (err) => fail(err)
