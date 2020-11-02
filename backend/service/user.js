@@ -9,11 +9,11 @@ const utils = require('../lib/utils')
 module.exports = {
   register: async (req, res) => {
     const params = req.body
-    const user = await userDao.getUserByName(params.username)
+    const user = await userDao.getByName(params.username)
     if (user) {
       res.status(400).send(errorMsg(400101))
     } else {
-      userDao.createUser(
+      userDao.create(
         params,
         (dbRes) => {
           res.status(200).send({ code: 200, data: dbRes })
@@ -27,8 +27,7 @@ module.exports = {
   login: async (req, res) => {
     const params = req.body
     params.password = utils.decrypt(params.password, req.session.key)
-    // todo 加密和解密
-    const user = await userDao.getUserByNameAndPassword(params)
+    const user = await userDao.getByNameAndPassword(params)
     if (user) {
       res.cookie(`daydayup_userId`, user.id, { maxAge: 3600 * 1000 })
       res.status(200).send({ code: 200, data: user })
@@ -36,8 +35,8 @@ module.exports = {
       res.status(400).send(errorMsg(400103))
     }
   },
-  getUserInfo: async (req, res) => {
-    const user = await userDao.getUserById(req.cookies.daydayup_userId)
+  getInfo: async (req, res) => {
+    const user = await userDao.getById(req.cookies.daydayup_userId)
     if (!user) {
       res.status(400).send(errorMsg(400105))
     } else {
@@ -46,11 +45,11 @@ module.exports = {
   },
   edit: async (req, res) => {
     const params = req.body
-    const user = await userDao.getUserByName(params.username)
+    const user = await userDao.getByName(params.username)
     if (user && user.id !== params.userId) {
       res.status(400).send(errorMsg(400101))
     } else {
-      userDao.updateUser(
+      userDao.update(
         params,
         (dbRes) => {
           res.status(200).send({ code: 200, data: dbRes })

@@ -33,7 +33,18 @@ export default {
     this.initData()
   },
   methods: {
-    initData() {}
+    initData() {
+      uni.request({
+        url: '/api/task/list',
+        method: 'GET',
+        dataType: 'JSON',
+        success: res => {
+          if (res.data.code === 200) {
+            console.log(res)
+          }
+        }
+      })
+    }
   }
 }
 </script>

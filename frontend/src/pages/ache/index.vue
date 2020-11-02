@@ -1,19 +1,19 @@
 <template>
   <view class="content">
-    <view class="wishbar">
+    <view class="achebar">
       <view class="list" v-for="(item, key) in typeMap" :key="key">
         <button class="check-btn" @click="typeChange(key)">{{ item }}</button>
       </view>
     </view>
-    <view class="wish-main">
-      <view class="wish-statistic">
+    <view class="ache-main">
+      <view class="ache-statistic">
         <view class="name">{{ typeName }}</view>
         <view class="progress">
           <view class="bar" :style="{ width: `${(finished / total) * 100}%` }"></view>
           <view class="text">{{ finished }} / {{ total }}</view>
         </view>
       </view>
-      <view class="wish-list">
+      <view class="ache-list">
         <text>*成就*</text>
         <view class="list-main" v-for="item in typeList" :key="index">
           <view class="name">{{ item.name }}</view>
@@ -98,14 +98,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/* pages/wish/index.wxss */
+/* pages/ache/index.wxss */
 
 .content {
   padding: 1rem 0.25rem;
   box-sizing: border-box;
 }
 
-.wishbar {
+.achebar {
   display: inline-block;
   width: 30%;
   height: 100%;
@@ -130,14 +130,14 @@ export default {
   }
 }
 
-.wish-main {
+.ache-main {
   display: inline-block;
   width: 70%;
   height: auto;
   vertical-align: top;
 }
 
-.wish-statistic {
+.ache-statistic {
   width: 100%;
   height: auto;
   padding: 12rpx 24rpx;
@@ -177,7 +177,7 @@ export default {
   }
 }
 
-.wish-list {
+.ache-list {
   width: 100%;
   height: auto;
   padding: 12rpx 24rpx;

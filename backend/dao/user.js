@@ -10,14 +10,9 @@ const getUser = (obj) => {
   if (!obj) return null
   return new User(obj).toObject()
 }
-const getUserList = (list) => {
-  if (!list) return []
-  if (!list.length) return []
-  return list.map((item) => new User(item).toObject())
-}
 
 module.exports = {
-  getUserById: function (userId) {
+  getById: function (userId) {
     const query = {
       sql: `SELECT * FROM user where id = ?`,
       timeout: TIMEOUT,
@@ -28,7 +23,7 @@ module.exports = {
       () => null
     )
   },
-  getUserByName: function (username) {
+  getByName: function (username) {
     const query = {
       sql: `SELECT * FROM user where username = ?`,
       timeout: TIMEOUT,
@@ -39,7 +34,7 @@ module.exports = {
       () => null
     )
   },
-  getUserByNameAndPassword: function ({ username, password }) {
+  getByNameAndPassword: function ({ username, password }) {
     const query = {
       sql: `SELECT * FROM user where username = ? and password = ?`,
       timeout: TIMEOUT,
@@ -50,17 +45,7 @@ module.exports = {
       () => null
     )
   },
-  getUsers: function () {
-    const query = {
-      sql: `SELECT * FROM user`,
-      timeout: TIMEOUT
-    }
-    return db.row(query).then(
-      (dbRes) => getUserList(dbRes),
-      () => []
-    )
-  },
-  createUser: function ({ username, password }, success, fail) {
+  create: function ({ username, password }, success, fail) {
     const query = {
       sql: 'INSERT INTO user(username, password) VALUE (? ,?)',
       timeout: TIMEOUT,
@@ -74,17 +59,28 @@ module.exports = {
       (err) => fail(err)
     )
   },
-  updateUser: function ({ userId, username, password, email, mobile }, success, fail) {
+  update: function ({ userId, username, password, email, mobile }, success, fail) {
     let query = {
       sql: `UPDATE user SET username = ?${password ? ',password = ?' : ''},email = ?,mobile = ? WHERE id = ?`,
       timeout: TIMEOUT,
       values: password ? [username, password, email, mobile, userId] : [username, email, mobile, userId]
     }
     return db.row(query).then(
-      async (dbRes) => {
+      async () => {
         const user = await this.getUserById(userId)
         success(user)
       },
+      (err) => fail(err)
+    )
+  },
+  setPoint: function ({ userId, point }, success, fail) {
+    let query = {
+      sql: `UPDATE user SET point = ? WHERE id = ?`,
+      timeout: TIMEOUT,
+      values: [point, userId]
+    }
+    return db.row(query).then(
+      (dbRes) => success(dbRes),
       (err) => fail(err)
     )
   }
