@@ -1,19 +1,17 @@
-class Ache {
+class Wish {
   constructor(obj) {
     this.id = obj.id
-    this.type = obj.type
     this.name = obj.name
     this.point = obj.point
-    this.finished = obj.finished
+    this.time = obj.time
   }
   toObject() {
     return {
       id: this.id,
-      type: this.type,
       name: this.name,
       point: this.point,
-      finished: this.finished
+      time: this.time
     }
   }
 }
-module.exports = Ache
+module.exports = Wish

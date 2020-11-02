@@ -3,12 +3,12 @@
   @author rex.sun
   @date 2020/11/02
 */
-const wishDao = require('../dao/ache')
+const wishDao = require('../dao/wish')
 const logDao = require('../dao/log')
 const errorMsg = require('../lib/errorMsg')
 module.exports = {
   list: async (req, res) => {
-    let result = await wishDao.getList(req.query)
+    let result = await wishDao.list(req.query)
     res.status(200).send({ code: 200, data: result })
   },
   finish: async (req, res) => {
@@ -16,11 +16,12 @@ module.exports = {
       req.body,
       async (dbRes) => {
         let wish = await wishDao.getById(req.body.id)
-        logDao.addLog(
+        logDao.add(
           {
             ...wish,
             optType: 'delete',
-            type: 'wish'
+            type: 'wish',
+            userId: req.body.userId
           },
           (logDbRes) => {
             res.status(200).send({ code: 200, data: dbRes })

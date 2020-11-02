@@ -18,10 +18,6 @@ module.exports = {
       async () => {
         let ache = await acheDao.getById(req.body.acheId)
         let user = await userDao.getById(req.body.userId)
-        console.log(req.body.acheId)
-        console.log(req.body.userId)
-        console.log(ache)
-        console.log(user)
         let point = Number(user.point) + Number(ache.point)
         let responeseMsg = ache
         let isError = false
@@ -40,7 +36,8 @@ module.exports = {
           {
             ...ache,
             optType: 'add',
-            type: 'ache'
+            type: 'ache',
+            userId: req.body.userId
           },
           () => {},
           (err) => {
