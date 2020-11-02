@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import listData from '../../components/listData'
+import listData from './listData'
 export default {
   data() {
     return {
@@ -37,3 +37,9 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.content {
+  padding: 1rem 0.5rem;
+  box-sizing: border-box;
+}
+</style>

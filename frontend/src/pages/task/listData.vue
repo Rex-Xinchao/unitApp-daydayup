@@ -34,9 +34,8 @@ export default {
   display: block;
   width: 100%;
   height: auto;
-  padding: 0 12rpx;
-  margin-bottom: 20rpx;
-  padding-bottom: 30rpx;
-  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: thin solid #ccc;
 }
 </style>
