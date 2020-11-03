@@ -1,28 +1,35 @@
-const express = require("express");
-const router = express.Router();
-const taskModel = require("../model/task");
-const logModel = require("../model/log");
-const utils = require("../lib/utils");
+/* 
+  Task Controller
+  @author rex.sun
+  @date 2020/11/03
+*/
+const express = require('express')
+const router = express.Router()
+const taskService = require('../service/task')
+const utils = require('../lib/utils')
+const errorMsg = require('../lib/errorMsg')
 
-/* GET home page. */
-router.get("/list", (req, res, next) => {
-  const params = req.query;
-  utils.checkQueryParams(req, res, ["openid"]);
-  taskModel.getList(
-    params,
-    (data) => res.status(200).json({ code: 200, data: data }),
-    (err) => res.status(400).send({ code: 50010, data: err })
-  );
-});
+router.get('/list', (req, res, next) => {
+  const userId = req.cookies.daydayup_userId
+  req.query.userId = Number(userId)
+  if (!userId) {
+    res.status(400).send(errorMsg(400110))
+  } else {
+    taskService.list(req, res)
+  }
+})
 
-router.post("/update", (req, res, next) => {
-  const params = req.body;
-  utils.checkBodyParams(req, res, ["id", "current", "openid"]);
-  taskModel.update(
-    params,
-    (data) => res.status(200).json({ code: 200, data: data }),
-    (err) => res.status(400).send({ code: 50010, data: err })
-  );
-});
+router.post('/finish', (req, res, next) => {
+  const checkFields = ['id']
+  const userId = req.cookies.daydayup_userId
+  req.body.userId = Number(userId)
+  if (!userId) {
+    res.status(400).send(errorMsg(400110))
+  } else if (utils.checkParams(req.body, checkFields)) {
+    res.status(400).send(errorMsg(400001, checkFields))
+  } else {
+    taskService.finish(req, res)
+  }
+})
 
-module.exports = router;
+module.exports = router

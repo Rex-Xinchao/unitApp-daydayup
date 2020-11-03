@@ -14,7 +14,7 @@
       <view v-if="item.current === item.limit" class="submit-button submit-button_finish" @click="finish">
         已完成
       </view>
-      <view wx:else class="submit-button" @click="finish">完成</view>
+      <view v-else class="submit-button" @click="finish(item)">完成</view>
     </view>
   </view>
 </template>
@@ -43,7 +43,26 @@ export default {
     showMore() {
       this.isShow = !this.isShow
     },
-    finish() {}
+    finish(item) {
+      wx.request({
+        url: `/api/task/finish`,
+        data: {
+          id: item.id
+        },
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        success: res => {
+          this.loading = false
+          if (res.data.code === 200) {
+            item.current += 1
+          } else {
+            this.$message(res.data.msg, 'error')
+          }
+        }
+      })
+    }
   }
 }
 </script>

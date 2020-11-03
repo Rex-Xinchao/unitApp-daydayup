@@ -18,16 +18,22 @@ const errorMap = {
     return { code: 400105, data: data, msg: '用户不存在' }
   },
   400201: (data) => {
-    return { code: 400105, data: data, msg: '添加日志失败' }
+    return { code: 400201, data: data, msg: '添加日志失败' }
   },
   400301: (data) => {
-    return { code: 400105, data: data, msg: '完成成就失败' }
+    return { code: 400301, data: data, msg: '完成成就失败' }
   },
   400401: (data) => {
-    return { code: 400105, data: data, msg: '完成愿望失败' }
+    return { code: 400401, data: data, msg: '完成愿望失败' }
   },
   400402: (data) => {
-    return { code: 400105, data: data, msg: '积分不足' }
+    return { code: 400402, data: data, msg: '积分不足' }
+  },
+  400501: (data) => {
+    return { code: 400501, data: data, msg: '完成任务失败' }
+  },
+  400502: (data) => {
+    return { code: 400501, data: data, msg: '任务次数已达上限' }
   },
   400110: (data) => {
     return { code: 400110, data: data, msg: '用户未登录' }
