@@ -72,5 +72,16 @@ module.exports = {
       (dbRes) => success(dbRes),
       (err) => fail(err)
     )
+  },
+  resetTaskCurrent: function (timely, success, fail) {
+    let query = {
+      sql: 'UPDATE task SET current = 0 WHERE timely = ?',
+      timeout: 4000,
+      values: [timely]
+    }
+    db.row(query).then(
+      (dbRes) => success(dbRes),
+      (err) => fail(err)
+    )
   }
 }
