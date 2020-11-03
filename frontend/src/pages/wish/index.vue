@@ -80,22 +80,25 @@ export default {
         }
       })
     },
-    finish() {
-      const wishid = e.mark.data.id
-      const openid = wx.getStorageSync('openid')
+    finish(item) {
       wx.request({
-        url: `${globalData.host}/wish/finish`,
+        url: `/api/wish/finish`,
         data: {
-          id: wishid,
-          openid: openid
+          id: item.id
         },
         method: 'POST',
         header: {
-          'Content-Type': 'application/x-www-form-urlencoded' //post
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         success: res => {
-          if (res.data.code == 200) {
+          this.loading = false
+          if (res.data.code === 200) {
+            this.page = 1
+            this.total = 0
+            this.typeList = []
             this.getWishList()
+          } else {
+            this.$message(res.data.msg, 'error')
           }
         }
       })

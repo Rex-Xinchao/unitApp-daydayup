@@ -8,6 +8,8 @@ export default {
       success: res => {
         if (res.data.code === 200) {
           this.$store.dispatch('setUser', res.data.data)
+        } else {
+          this.$message(res.data.msg, 'error')
         }
       }
     })

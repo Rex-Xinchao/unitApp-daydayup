@@ -26,6 +26,9 @@ const errorMap = {
   400401: (data) => {
     return { code: 400105, data: data, msg: '完成愿望失败' }
   },
+  400402: (data) => {
+    return { code: 400105, data: data, msg: '积分不足' }
+  },
   400110: (data) => {
     return { code: 400110, data: data, msg: '用户未登录' }
   }
